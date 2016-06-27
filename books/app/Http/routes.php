@@ -37,6 +37,8 @@ Route::post('/register', 'Auth\AuthController@postRegister');
 
 Route::get('/mylist','listofbooksController@show');
 Route::get('delete/{book_name}', ['uses' =>'listofbooksController@delete']);
+Route::get('change_order/up/{direction}/{book_name}', ['uses' =>'listofbooksController@change_order']);
+Route::get('change_order/down/{direction}/{book_name}', ['uses' =>'listofbooksController@change_order']);
 route::get('/addbook','BookController@show');
 route::get('add_book/{name}/{author}/{publish_date}',['uses'=>'BookController@add_book']);
 if (Auth::check())

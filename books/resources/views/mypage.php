@@ -14,8 +14,16 @@
 		///looop through and get book titles and print them out
 			foreach($book_title as $title){
 			echo '<a href="delete/'.$title.'" class="sign">Delete</a>'
-                 .$title . '<br/>';
-		}
+                 .$title ;
+            foreach($list_orders as $order){
+
+            echo '<a href ="change_order/up/0/'.$order.'"class ="btn" > Move up </a>';
+
+            echo '<a href ="change_order/down/1/'.$order.'" class ="btn" > Move Down </a>';
+            echo '<br/> ';}
+        }
+
+		
 
 	?>
 	</body>
