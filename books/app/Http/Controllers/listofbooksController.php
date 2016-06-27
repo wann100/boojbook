@@ -32,12 +32,12 @@ class listofbooksController extends Controller
     		 $thebook = Book::where('name',$book_name)->get();
     		 $keyindex = 0;
     		 //loop again to return list of all booknames;
-    		 foreach($thebook as $book){
+    		 foreach($thebook as $books){
     		 //	echo $book->name;
     		 	$keyindex++;
-    		 	// $data = array('book_name'=>$book->name );
-    			$data[] ='Title:' . $book->name .','.'Author:'.$book->author;
-    			$bookname[] = $book->name;
+                $data[] ='<a href="delete/'.$books->name.'" class="sign">Delete</a>'.$books->name.'<a href ="change_order/up/0/'.$book->list_order.'"class ="btn" > Move up </a> <a href ="change_order/down/1/'.$book->list_order.'" class ="btn" > Move Down </a><br/>';
+
+    			$bookname[] = $books->name;
                    			
     		 }
     		 
@@ -45,7 +45,7 @@ class listofbooksController extends Controller
     	}
     	///print_r( $data);
 
-    	return view('mypage',array('book_title'=>$bookname),array('list_orders'=>$bookorder));
+    	return view('mypage',array('book_data'=>$data));
     }
     if(empty($listofbooks)){
     	return view('mypage');
@@ -99,16 +99,20 @@ class listofbooksController extends Controller
 
     public function change_order($id,$direction){
         $temp_list = Listofbooks::where('list_order',$id)->get();
+        $order ='';
          foreach($temp_list as $list){
             echo $list->list_order;
             if($list->list_order == $id){
                 $order= $list;
             }
         }
-
-        $prev_order = listofbooks::where('list_order','<',$order->list_order)->max('list_order');
-        $next_order = listofbooks::where('list_order','>',$order->list_order)->min('list_order');
+        echo $order;
+        if(!is_null($order)){
+        $prev_order = listofbooks::where('list_order','<',$order)->max('list_order');
+        $next_order = listofbooks::where('list_order','>',$order)->min('list_order');
+    }
     $id = 1;
+
 
     if (Auth::check())
     {
@@ -122,7 +126,7 @@ if( $direction== 1){
         $neworder = $order->list_order +1 ;
 
        $order->list_order= $neworder;
-      $order->update();
+      $order->save();
       //echo $order->list_order;
 }
 if($direction == 0){
@@ -134,7 +138,7 @@ if($direction == 0){
           //  echo 'after'.$order->list_order;
 
        // $next_order->update();
-      $order->update();
+      $order->save();
 }
 }
 
