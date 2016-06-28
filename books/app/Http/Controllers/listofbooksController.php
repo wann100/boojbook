@@ -8,12 +8,17 @@ use App\Http\Requests;
 use App\Book as Book;
 use App\listofbooks as listofbooks;
 use Auth;
+/**
+*Purpose: Functions used in my page and routes in order to display or get data
+*
+**/
 
 class listofbooksController extends Controller
 
 {	
 	/**
-    *Place Description here
+    *Show()
+    *returns a  view with data from booklist to be displayed
     **/
     public function show(){
     	$userid = 1;
@@ -43,7 +48,6 @@ class listofbooksController extends Controller
     		 
 
     	}
-    	///print_r( $data);
 
     	return view('mypage',array('book_data'=>$data));
     }
@@ -55,7 +59,9 @@ class listofbooksController extends Controller
 
     }
     /**
-    *Place Description here
+    *Delete: 
+    *INPut: $book_name( string of the book_name)
+    *Description: Deletes booklist row with users information
     **/
 
     public function delete($book_name){
@@ -73,7 +79,9 @@ class listofbooksController extends Controller
 
     }
     /**
-    *Place Description here
+    *add_a_book
+    *INPut: $book_name( string of the book_name)
+    *Description: Adds a book to listofbooks db
     **/
 
     public function add_a_book($bookname){
@@ -90,7 +98,9 @@ class listofbooksController extends Controller
     }
     /**
     * Change Order: changes order of book in list
-    * input : bookname and direction: 1=down 0 = up
+    *input:($id: order of where you are , $direction: Wether to move up or dwn(direction: 1=down 0 = up)
+    * Description: shifts this listbook up or down users list.
+    * input : bookname and
     * thinking about using insertion sort. so from the 
     * $connector->query("UPDATE `TopTips` SET `order` = `order` - 1 WHERE `id` = " . $_GET['lastid']);
     * $connector->query("UPDATE `TopTips` SET `order` = `order` + 1 WHERE `id` = " . $_GET['id']); }else if ( $_GET['move'] == "down")
@@ -100,6 +110,7 @@ class listofbooksController extends Controller
     public function change_order($id,$direction){
         $temp_list = Listofbooks::where('list_order',$id)->get();
         $order ='';
+         $id = 1;
          foreach($temp_list as $list){
             echo $list->list_order;
             if($list->list_order == $id){
@@ -111,14 +122,12 @@ class listofbooksController extends Controller
         $prev_order = listofbooks::where('list_order','<',$order)->max('list_order');
         $next_order = listofbooks::where('list_order','>',$order)->min('list_order');
     }
-    $id = 1;
-
-
+   //check if logged in
     if (Auth::check())
     {
      $id = Auth::user()->getId();
     }
-
+//down
 if( $direction== 1){
         //echo $prev_order;
       // $prev_order=-1;
@@ -129,15 +138,13 @@ if( $direction== 1){
       $order->save();
       //echo $order->list_order;
 }
+//up
 if($direction == 0){
             echo 'before'. $order->list_order;
 
       listofbooks::where('list_order',$next_order)->update(['list_order'=>$next_order++]);
         $neworder = $order->list_order -1 ;
         $order->list_order = $neworder ;
-          //  echo 'after'.$order->list_order;
-
-       // $next_order->update();
       $order->save();
 }
 }
